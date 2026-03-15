@@ -2,30 +2,31 @@ from router import route_and_respond
 from logger import log_route
 
 
-def main():
-    print("LLM Prompt Router")
-    print("Type 'exit' to quit\n")
+def run_router():
+    print("AI Intent Router System")
+    print("Type 'exit' anytime to stop the program.\n")
 
     while True:
-        user_message = input("Enter message: ")
+        user_input = input("Your message: ")
 
-        if user_message.lower() == "exit":
-            print("Goodbye!")
+        if user_input.lower() == "exit":
+            print("Session ended. Goodbye!")
             break
 
-        intent_data, response = route_and_respond(user_message)
+        # process the message
+        result, reply = route_and_respond(user_input)
 
-        intent = intent_data["intent"]
-        confidence = intent_data["confidence"]
+        detected_intent = result["intent"]
+        confidence_score = result["confidence"]
 
-        print("\nDetected Intent:", intent)
-        print("Confidence:", confidence)
-        print("\nResponse:\n", response)
-        print("\n-----------------------------------\n")
+        print("\nDetected Intent:", detected_intent)
+        print("Confidence Score:", confidence_score)
+        print("\nGenerated Response:\n", reply)
+        print("\n--------------------------------------\n")
 
-        # Log the request
-        log_route(intent, confidence, user_message, response)
+        # store the interaction in log file
+        log_route(detected_intent, confidence_score, user_input, reply)
 
 
 if __name__ == "__main__":
-    main()
+    run_router()

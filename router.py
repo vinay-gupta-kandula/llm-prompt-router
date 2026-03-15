@@ -1,36 +1,63 @@
 from classifier import classify_intent
-from prompts import SYSTEM_PROMPTS
+from prompts import EXPERT_PROMPTS
 
 
-def route_and_respond(message: str):
+def route_and_respond(user_message: str):
+    """
+    Routes the user's message to the correct expert persona
+    based on the detected intent.
+    """
 
-    intent_data = classify_intent(message)
+    # Step 1: classify the user message
+    classification = classify_intent(user_message)
+    intent = classification["intent"]
 
-    intent = intent_data["intent"]
-
+    # Step 2: handle unclear requests
     if intent == "unclear":
-        return intent_data, (
-            "I'm not sure what you're asking. "
-            "Are you looking for help with coding, data analysis, writing improvement, "
+        clarification_msg = (
+            "I couldn't clearly understand your request. "
+            "Are you asking about programming, data analysis, writing help, "
             "or career advice?"
         )
+        return classification, clarification_msg
 
-    system_prompt = SYSTEM_PROMPTS.get(intent)
+    # Step 3: get the appropriate expert prompt
+    expert_prompt = EXPERT_PROMPTS.get(intent)
 
-    # Generate simple response using expert persona
+    # Step 4: generate a simple expert-style response
     if intent == "code":
-        response = f"{system_prompt}\n\nExample solution:\nUse Python's built-in sorted() function:\n\nsorted_list = sorted(your_list)"
+        response_text = (
+            f"{expert_prompt}\n\n"
+            "Example approach:\n"
+            "In Python, you can sort a list using the built-in sorted() function:\n\n"
+            "sorted_list = sorted(my_list)"
+        )
 
     elif intent == "data":
-        response = f"{system_prompt}\n\nTo calculate the average:\n(12 + 45 + 67) / 3 = 41.33"
+        response_text = (
+            f"{expert_prompt}\n\n"
+            "Example calculation:\n"
+            "Average = (12 + 45 + 67) / 3 = 41.33"
+        )
 
     elif intent == "writing":
-        response = f"{system_prompt}\n\nYour sentence may contain clarity or tone issues. Review sentence structure and remove filler words."
+        response_text = (
+            f"{expert_prompt}\n\n"
+            "Suggestion:\n"
+            "Check sentence clarity and remove unnecessary filler words. "
+            "Breaking long sentences into shorter ones can also improve readability."
+        )
 
     elif intent == "career":
-        response = f"{system_prompt}\n\nFor interview preparation: research the company, practice common questions, and prepare examples of your past work."
+        response_text = (
+            f"{expert_prompt}\n\n"
+            "Interview preparation tips:\n"
+            "- Research the company and role\n"
+            "- Practice common interview questions\n"
+            "- Prepare examples of your past work or projects"
+        )
 
     else:
-        response = "I couldn't generate a response."
+        response_text = "Sorry, I couldn't generate a suitable response."
 
-    return intent_data, response
+    return classification, response_text

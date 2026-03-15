@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  prompt-router:
+    build: .
+    container_name: llm_prompt_router
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./route_log.jsonl:/app/route_log.jsonl

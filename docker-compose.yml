@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  prompt-router:
+    build: .
+    container_name: intent_router_app
+    env_file:
+      - .env
+    volumes:
+      # This ensures the log file generated inside the container saves to your local folder
+      - ./route_log.jsonl:/app/route_log.jsonl
